@@ -139,7 +139,7 @@ Create `/etc/nginx/sites-available/bookmark-app`:
 ```nginx
 server {
     listen 80;
-    server_name your-subdomain.yourdomain.com;
+    server_name duc.cashgps.co;
 
     location / {
         proxy_pass http://localhost:3000;
