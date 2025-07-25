@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { BookmarkDto, BookmarkEditDto } from './dto/bookmark.dto';
 import { UploadService } from 'src/upload/upload.service';
@@ -35,15 +35,37 @@ export class BookmarkService {
     }
   }
 
-  async create(userId: string, bmBody: BookmarkDto) {
+  async create(
+    userId: string,
+    bmBody: BookmarkDto,
+    file?: Express.Multer.File,
+  ) {
     try {
+      let fileKey: string | undefined;
+
+      if (file && bmBody.link)
+        throw new BadRequestException(
+          'You cannot store link when marking a file',
+        );
+
+      if (file) {
+        const uploadResult = await this.uploadService.uploadFile(file);
+        fileKey = uploadResult.key;
+      }
+
       const newBm = await this.prisma.bookmark.create({
-        data: { userId, ...bmBody },
+        data: { userId, ...bmBody, fileKey },
       });
+
+      if (fileKey) {
+        const fileUrl = await this.uploadService.getSignedUrl(fileKey);
+        return { ...newBm, link: fileUrl };
+      }
+
       return newBm;
     } catch (error) {
       console.error(error);
-      throw new Error('Something went wrong...');
+      throw error;
     }
   }
 
@@ -52,7 +74,7 @@ export class BookmarkService {
       const curBm = await this.prisma.bookmark.findFirst({
         where: { userId, id: bmBody.id },
       });
-      if (!curBm) throw new Error('Could not find the bookmark');
+      if (!curBm) throw new BadRequestException('Could not find the bookmark');
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { id, ...updateData } = bmBody;
@@ -72,7 +94,7 @@ export class BookmarkService {
       const curBm = await this.prisma.bookmark.findFirst({
         where: { userId, id: bmId },
       });
-      if (!curBm) throw new Error('Could not find the bookmark');
+      if (!curBm) throw new BadRequestException('Could not find the bookmark');
 
       const removedBm = await this.prisma.bookmark.delete({
         where: { id: bmId },

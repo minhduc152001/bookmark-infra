@@ -41,6 +41,11 @@ lerna-debug.log*
 .env.test.local
 .env.production.local
 .env.local
+.env.production
+
+# AWS deployment files (contains sensitive data)
+*.pem
+aws-config.json
 
 # temp directory
 .temp

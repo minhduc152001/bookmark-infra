@@ -15,7 +15,7 @@ export class UploadService {
 
   constructor(private configService: ConfigService) {
     this.s3Client = new S3Client({
-      region: this.configService.get<string>('AWS_REGION') || 'us-east-1',
+      region: this.configService.get<string>('AWS_REGION') || 'ap-southeast-1',
       credentials: {
         accessKeyId: this.configService.get<string>('AWS_ACCESS_KEY_ID') || '',
         secretAccessKey:

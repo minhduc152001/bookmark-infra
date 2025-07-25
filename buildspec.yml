@@ -1,0 +1,28 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Installing dependencies...
+      - npm install
+      - npm install -g @nestjs/cli
+  build:
+    commands:
+      - echo Building the application...
+      - npm run build
+      - echo Build completed on `date`
+  post_build:
+    commands:
+      - echo Post build phase...
+      - cp package*.json dist/
+      - cp -r prisma dist/
+      - cp -r generated dist/
+      - cp appspec.yml dist/
+      - cp -r scripts dist/
+      - cp ecosystem.config.js dist/
+
+artifacts:
+  files:
+    - '**/*'
+  base-directory: 'dist'
+  name: bookmark-app-build

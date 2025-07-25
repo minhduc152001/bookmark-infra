@@ -7,7 +7,10 @@ import {
   Post,
   Put,
   UseGuards,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { User } from 'generated/prisma';
 import { GetUser } from 'src/auth/decorator';
 import { JwtGuard } from 'src/auth/guard';
@@ -15,7 +18,7 @@ import { BookmarkService } from './bookmark.service';
 import { BookmarkDto, BookmarkEditDto } from './dto';
 
 @UseGuards(JwtGuard)
-@Controller('bookmark')
+@Controller('api/bookmark')
 export class BookmarkController {
   constructor(private bookmarkService: BookmarkService) {}
 
@@ -25,8 +28,13 @@ export class BookmarkController {
   }
 
   @Post('/')
-  create(@GetUser() user: User, @Body() bmBody: BookmarkDto) {
-    return this.bookmarkService.create(user.id, bmBody);
+  @UseInterceptors(FileInterceptor('file'))
+  create(
+    @GetUser() user: User,
+    @Body() bmBody: BookmarkDto,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    return this.bookmarkService.create(user.id, bmBody, file);
   }
 
   @Put('/')
@@ -35,7 +43,7 @@ export class BookmarkController {
   }
 
   @Delete('/:bookmarkId')
-  delete(@GetUser() user: User, @Param() bmId: string) {
+  delete(@GetUser() user: User, @Param('bookmarkId') bmId: string) {
     return this.bookmarkService.delete(user.id, bmId);
   }
 }
