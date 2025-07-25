@@ -1,98 +1,184 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Bookmark Management API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A full-featured RESTful API for bookmark management with user authentication, file uploads, and AWS cloud deployment.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🛠️ Tech Stack Overview
 
-## Description
+### Backend Framework
+- **NestJS v11** - Enterprise-grade Node.js framework with modular architecture
+- **TypeScript** - Static typing for JavaScript
+- **Node.js v20** - JavaScript runtime environment
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+### Database & ORM
+- **PostgreSQL** - Relational database for data persistence
+- **Prisma ORM v6** - Type-safe database client with migrations
+- **UUID** - Primary keys for better scalability
 
-## Project setup
+### Authentication & Security
+- **JWT (JSON Web Tokens)** - Stateless authentication with 60-minute expiry
+- **Passport.js** - Authentication middleware with JWT strategy
+- **Argon2** - Password hashing (winner of Password Hashing Competition)
+- **Class Validator** - DTO validation with decorators
+- **CORS** - Cross-origin resource sharing enabled
 
+### File Storage & Upload
+- **AWS S3** - Cloud object storage for file uploads
+- **Multer** - Multipart form data handling
+- **Presigned URLs** - Secure, temporary file access
+
+### Testing Infrastructure
+- **Jest** - Unit and integration testing framework
+- **Pactum** - E2E API testing library
+- **Test Database** - Isolated PostgreSQL instance for tests
+- **Coverage Reports** - Code coverage analysis
+
+### Development Tools
+- **ESLint** - Code linting with TypeScript support
+- **Prettier** - Code formatting
+- **Nodemon** - Development server with hot reload
+- **SWC** - Fast TypeScript compilation
+
+### Production Infrastructure (AWS)
+- **EC2** - Application hosting on Amazon Linux 2
+- **RDS PostgreSQL** - Managed database service
+- **Application Load Balancer (ALB)** - Traffic distribution & health checks
+- **Route 53** - DNS management
+- **ACM** - SSL/TLS certificates
+
+### CI/CD Pipeline
+- **GitHub** - Source code repository
+- **AWS CodePipeline** - Automated deployment pipeline
+- **AWS CodeBuild** - Build and test automation
+- **AWS CodeDeploy** - Zero-downtime deployments
+- **S3** - Artifact storage
+
+### Process Management & Web Server
+- **PM2** - Node.js process manager with clustering
+- **Nginx** - Reverse proxy and static file serving
+- **Systemd** - Service management on Linux
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js 20.x
+- PostgreSQL 15.x
+- AWS Account (for production features)
+
+### Local Development
 ```bash
-$ npm install
+# Install dependencies
+npm install
+
+# Set up environment variables
+cp .env.example .env
+
+# Generate Prisma client
+npx prisma generate
+
+# Run database migrations
+npx prisma migrate dev
+
+# Start development server
+npm run start:dev
 ```
 
-## Compile and run the project
-
+### Production Build
 ```bash
-# development
-$ npm run start
+# Build the application
+npm run build
 
-# watch mode
-$ npm run start:dev
+# Generate Prisma client for production
+npx prisma generate
 
-# production mode
-$ npm run start:prod
+# Run production server
+npm run start:prod
 ```
 
-## Run tests
+## 📁 Project Architecture
 
-```bash
-# unit tests
-$ npm run test
+```
+src/
+├── auth/                 # JWT authentication module
+│   ├── decorator/       # @GetUser() decorator
+│   ├── dto/            # Login/Signup DTOs
+│   ├── guard/          # JWT AuthGuard
+│   └── strategy/       # Passport JWT strategy
+├── bookmark/            # Bookmark CRUD operations
+│   ├── dto/            # Bookmark DTOs
+│   └── bookmark.service.ts # Business logic with S3 integration
+├── prisma/              # Database abstraction layer
+├── upload/              # S3 file upload service
+├── user/                # User profile management
+└── health/              # Health check for ALB
 
-# e2e tests
-$ npm run test:e2e
+prisma/
+├── schema.prisma        # Database schema definition
+└── migrations/          # Database migration history
 
-# test coverage
-$ npm run test:cov
+scripts/                 # AWS CodeDeploy lifecycle scripts
+├── before_install.sh
+├── after_install.sh
+├── application_start.sh
+├── application_stop.sh
+└── validate_service.sh
 ```
 
-## Deployment
+## 🔐 Security Features
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+- Password hashing with Argon2
+- JWT token-based authentication
+- Request validation and sanitization
+- Environment-based configuration
+- Secure file access with presigned URLs
+- HTTPS enforcement in production
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## 🌐 API Endpoints
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| POST | `/auth/signup` | Register new user | No |
+| POST | `/auth/login` | Login user | No |
+| GET | `/user` | Get current user | Yes |
+| PATCH | `/user` | Update user profile | Yes |
+| GET | `/bookmark` | List user bookmarks | Yes |
+| GET | `/bookmark/:id` | Get bookmark details | Yes |
+| POST | `/bookmark` | Create bookmark (with file) | Yes |
+| PATCH | `/bookmark/:id` | Update bookmark | Yes |
+| DELETE | `/bookmark/:id` | Delete bookmark | Yes |
+| GET | `/health` | Health check | No |
+
+## 🚢 Production Deployment
+
+The application is designed for AWS deployment with:
+- Auto-scaling capabilities
+- Zero-downtime deployments
+- Automated CI/CD pipeline
+- Health monitoring
+- SSL/TLS encryption
+
+See [AWS Deployment Guide](docs/AWS_DEPLOYMENT_GUIDE.md) for detailed instructions.
+
+## 📊 Performance Features
+
+- Database connection pooling
+- PM2 cluster mode
+- Nginx caching
+- Optimized Prisma queries
+- AWS CDN for static assets
+
+## 🧪 Testing
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+# Unit tests
+npm run test
+
+# E2E tests
+npm run test:e2e
+
+# Test coverage
+npm run test:cov
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## 📝 License
 
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+This project is [MIT licensed](LICENSE).
