@@ -1,7 +1,7 @@
 module.exports = {
   apps: [{
     name: 'bookmark-app',
-    script: './main.js',
+    script: './dist/main.js',
     instances: 1,
     autorestart: true,
     watch: false,
