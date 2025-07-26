@@ -15,17 +15,21 @@ phases:
   post_build:
     commands:
       - echo Post build phase...
-      - cp package*.json dist/
-      - cp -r prisma dist/
-      - cp -r generated dist/ || echo "Generated folder will be created during deployment"
-      - cp appspec.yml dist/
-      - cp -r scripts dist/
-      - cp ecosystem.config.js dist/
-      - cp tsconfig.json dist/
-      - cp nest-cli.json dist/
+      - echo Preparing deployment package with correct structure...
+      # Create the deployment structure that maintains relative paths
+      - mkdir -p deploy-root/dist
+      - cp -r dist/* deploy-root/dist/
+      - cp -r generated deploy-root/
+      - cp -r prisma deploy-root/
+      - cp package*.json deploy-root/
+      - cp appspec.yml deploy-root/
+      - cp -r scripts deploy-root/
+      - cp ecosystem.config.js deploy-root/
+      - cp tsconfig.json deploy-root/
+      - cp nest-cli.json deploy-root/
 
 artifacts:
   files:
     - '**/*'
-  base-directory: 'dist'
+  base-directory: 'deploy-root'
   name: bookmark-app-build
