@@ -17,10 +17,12 @@ phases:
       - echo Post build phase...
       - cp package*.json dist/
       - cp -r prisma dist/
-      - cp -r generated dist/
+      - cp -r generated dist/ || echo "Generated folder will be created during deployment"
       - cp appspec.yml dist/
       - cp -r scripts dist/
       - cp ecosystem.config.js dist/
+      - cp tsconfig.json dist/
+      - cp nest-cli.json dist/
 
 artifacts:
   files:
